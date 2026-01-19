@@ -1,0 +1,56 @@
+why containers support scaling
+
+
+
+GKE
+
+Create a cluster in Kubernetes engine
+connect to cluster via cloud shell
+public clusters can be by default accessible through cloud shell
+
+
+is used to configure your local machine so it can talk to a Google Kubernetes Engine (GKE) cluster using kubectl.
+It downloads access credentials for a GKE cluster and updates your kubeconfig, so kubectl commands run against that cluster.
+gcloud container clusters get-credentials cluster-1 --zone us-central1-a --project ai-ml-1234
+
+gcloud container clusters get-credentials dtcluster --zone us-central1-a --project cobalt-matrix-480310-h2
+
+
+
+gcloud container clusters list
+
+
+The smallest deployable unit, One or more containers. If an app is deployed to Kubernetes, it ultimately runs inside pods.
+kubectl get pods
+kubectl get pods -A
+
+
+You deploy pods,Kubernetes schedules them onto nodes,Nodes provide CPU, memory, disk, and network
+Nodes
+no of nodes 1-2
+
+kubectl get pods
+kubectl get pods -A
+kubectl get nodes
+
+Test one sample pod
+kubectl run test-pod --image ngnix
+kubectl get pods -- result =1 pod
+
+
+kubectl create deployment sentiment-analysis-model --image path:v1 --replicas 2
+kubectl create deployment finaldt --image path:us-central1-docker.pkg.dev/cobalt-matrix-480310-h2/finaldt/finaldt:latest --replicas 2
+why 2 pods
+kubectl get deployments.apps
+kubectl get pods
+
+kubectl expose deployment sentiment-analysis-model --type LoadBalancer --name sentiment-analysis-service --port 8080 --target-port 8080
+kubectl expose deployment finaldt --type LoadBalancer --name sentiment-analysis-service --port 8080 --target-port 8080
+kubectl get services
+use external IP to test your application, Verify the load balancer in GCP, whether the load balancer object is created, if created test with external IP through Json
+
+cleanup
+
+kubectl delete service sentiment-analysis-service (delete the loadbalancer)
+kubectl delete deployments.app sentiment-analysis-model
+delete cluster from Cloud UI
