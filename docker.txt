@@ -1,0 +1,268 @@
+docker
+course-1
+
+
+docker build -t welcome-app .
+
+docker images -- to see the docker images
+
+
+docker run -p 5000:5000 welcome-app (host port vs container port)
+
+docker ps to view all the containers that are running
+
+docker stop container-id
+
+
+
+pushing docker image to docker hub repository
+
+docker login
+
+rename docker-image--->docker image rm -f welcome-app
+
+docker tag oldfile  newfile
+
+docker push krishnaik06/welcome-app:latest
+
+docker pull
+
+docker run -d -p 5000:5000 welcome-app:latest
+
+Bat Version
+
+Remove all containers 
+docker rm $(docker ps -aq) 
+
+Remove all images 
+docker rmi -f $(docker images -aq)
+
+ Stop all containers 
+docker stop $(docker ps -aq)
+
+
+CMD Version
+
+🔴 Stop ALL containers
+FOR /F %i IN ('docker ps -aq') DO docker stop %i
+
+🔴 Remove ALL containers
+FOR /F %i IN ('docker ps -aq') DO docker rm %i
+
+🔴 Remove ALL images
+FOR /F %i IN ('docker images -aq') DO docker rmi -f %i
+
+
+Got it 👍 — let’s go **slow, simple, and visual**.
+I’ll explain **what “multiple containers generated” means**, **why it happens**, and **how to see it yourself**.
+
+---
+
+## 1️⃣ First: What does “multiple containers” mean?
+
+It means:
+
+> **You started the same image more than once**, so Docker created **more than one container** from the same image.
+
+That’s it. Nothing complex.
+
+---
+
+## 2️⃣ One Image → Many Containers (Key Idea)
+
+### Image = Blueprint
+
+### Container = Running copy
+
+You can make **many containers from one image**, just like many houses from one blueprint.
+
+---
+
+## 3️⃣ Simple Example (Try This Mentally)
+
+### Step 1: You have an image
+
+```text
+decision-tree-api:1.0
+```
+
+### Step 2: You run it once
+
+```bat
+docker run -d --name api1 decision-tree-api:1.0
+```
+
+Docker creates:
+
+```text
+Container: api1
+```
+
+---
+
+### Step 3: You run it AGAIN
+
+```bat
+docker run -d --name api2 decision-tree-api:1.0
+```
+
+Docker creates:
+
+```text
+Container: api2
+```
+
+Now you have:
+
+| Container Name | Image                 |
+| -------------- | --------------------- |
+| api1           | decision-tree-api:1.0 |
+| api2           | decision-tree-api:1.0 |
+
+👉 **Same image, two containers**
+
+---
+
+## 4️⃣ How this happens accidentally (VERY COMMON)
+
+### You ran:
+
+```bat
+docker run -p 5000:5000 decision-tree-api
+```
+
+Then again:
+
+```bat
+docker run -p 5001:5000 decision-tree-api
+```
+
+Docker **does NOT reuse containers**
+It always creates a **new one**.
+
+---
+
+## 5️⃣ Why you didn’t notice
+
+Because:
+
+* Old container was **stopped**
+* Or running on a different port
+* Or auto-named by Docker
+
+Example:
+
+```text
+adoring_bhabha
+sharp_morse
+```
+
+You didn’t name them → Docker did.
+
+---
+
+## 6️⃣ How to SEE all containers (This is key)
+
+### Show running containers
+
+```bat
+docker ps
+```
+
+### Show ALL containers (running + stopped)
+
+```bat
+docker ps -a
+```
+
+You probably saw:
+
+```text
+CONTAINER ID   IMAGE                 STATUS
+a1b2c3         decision-tree-api     Exited
+d4e5f6         decision-tree-api     Up
+```
+
+That’s **multiple containers from one image**.
+
+---
+
+## 7️⃣ Why Docker didn’t delete the image
+
+When you tried:
+
+```bat
+docker rmi decision-tree-api
+```
+
+Docker said:
+
+```
+image is being used by container
+```
+
+Because:
+
+* One or more containers still existed
+* Even **stopped containers** block image deletion
+
+---
+
+## 8️⃣ Correct Cleanup (VERY IMPORTANT)
+
+### Step 1: Stop all containers
+
+```bat
+docker stop CONTAINER_ID
+```
+
+### Step 2: Remove all containers
+
+```bat
+docker rm CONTAINER_ID
+```
+
+### Step 3: Remove image
+
+```bat
+docker rmi decision-tree-api
+```
+
+---
+
+## 9️⃣ One-Command CMD Cleanup (Safe)
+
+```bat
+FOR /F %i IN ('docker ps -aq') DO docker rm -f %i
+```
+
+Now image removal will work.
+
+---
+
+## 🔁 Summary (Read This Once)
+
+* **One image can create many containers**
+* Every `docker run` = new container
+* Docker never reuses containers
+* Containers can exist even when stopped
+* Images cannot be deleted if containers exist
+
+---
+
+## 🧠 ONE-LINE MEMORY RULE
+
+> **Image = template**
+> **Container = running copy**
+> **Multiple runs = multiple containers**
+
+---
+
+If you want, next I can:
+
+* Show a **real output example**
+* Explain with **Windows folder analogy**
+* Show how to **reuse a container**
+* Explain **Docker Compose (multi-container apps)**
+
+Just tell me 👍
