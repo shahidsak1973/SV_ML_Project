@@ -1,0 +1,57 @@
+GIT
+
+git clone https..........git
+git status - 
+
+git init
+git remote add origin "link"
+git remote -v
+git branch
+git branch -m main
+git push origin main
+
+
+
+git branch
+git checkout <branch-name>
+git branch -d <branch-name> (delete)
+git branch -b <branch-name>  (create)
+
+git checkout -b <branch-name>
+
+if you are at one branch you cannot delete the same branch
+
+git pull origin <branch-name>
+
+In order to merge the changes from local branch to main/master branch you need to raise the pull request or use git merge
+
+git merge master(you need to be in branch1 to merge the changes from branch1 to master)
+
+
+
+
+
+git undo commands
+
+git reset   -- for staged changes  (git add .)
+git reset filename --- for single file
+
+git commit reset
+
+git reset HEAD~1 ( for single commit)
+
+
+Multiple commits
+git log -- Show all the commits you have done so far
+
+git reset <commit Hashcode>
+
+git reset --hard <commit Hashcode>
+
+
+
+
+
+
+
+
